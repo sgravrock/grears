@@ -1,4 +1,4 @@
-{-# LANGUAGE ImplicitParams, ScopedTypeVariables #-}
+{-# LANGUAGE ImplicitParams #-}
 
 import System.Exit
 import Test.HUnit
