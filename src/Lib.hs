@@ -8,7 +8,9 @@ module Lib
 someFunc :: IO ()
 someFunc = putStrLn "someFunc"
 
-data ResultUnits = GearRatio | GearInches Float | MphAtRpm Integer Float
+data ResultUnits = GearRatio
+                 | GearInches { diameter :: Float }
+                 | MphAtRpm { rpm :: Integer, diameter :: Float }
 
 onePair :: Integer -> Integer -> ResultUnits -> Float
 onePair x y GearRatio = ratio x y
