@@ -9,8 +9,9 @@ import Lib
 
 tests =
     let ?epsilon = 0.1 in
-    test ["GearRatio" ~: 0.67 ~~? computeOnePair 24 36 GearRatio
-        , "GearInches" ~: 19.3 ~~? computeOnePair 24 36 (GearInches 28.94)
+    test [ "GearRatio" ~: 0.67 ~~? computeOnePair 24 36 GearRatio
+         , "GearInches" ~: 19.3 ~~? computeOnePair 24 36 (GearInches 28.94)
+         , "MphAtRpm" ~: 29.6 ~~? computeOnePair 42 11 (MphAtRpm 90 28.94)
          ]
 
 run = runTestTT tests
