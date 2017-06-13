@@ -2,6 +2,7 @@ module Lib
     ( someFunc
     , ResultUnits(..)
     , computeOnePair
+    , allPairs
     ) where
 
 someFunc :: IO ()
@@ -16,6 +17,12 @@ computeOnePair x y (MphAtRpm rpm wheelDiameter) =
     let inchesDevelopment = (circumference wheelDiameter) * (ratio x y)
         inchesPerMinute = inchesDevelopment * (realToFrac rpm) * 60
     in inchesPerMinute / 63360
+
+allPairs :: Fractional a => [Integer] -> [Integer] -> ResultUnits a -> [[a]]
+allPairs fronts rears units = map (\f -> allForFront f rears units) fronts 
+
+allForFront :: Fractional a => Integer -> [Integer] -> ResultUnits a -> [a]
+allForFront front rears units = map (\r -> computeOnePair front r units) rears
 
 ratio :: Fractional a => Integer -> Integer -> a
 ratio x y = (fromInteger x) / (fromInteger y)
