@@ -18,6 +18,10 @@ tests =
          , "GearInches" ~: 19.3 ~~? onePair 24 36 (GearInches 28.94)
          , "MphAtRpm" ~: 29.6 ~~? onePair 42 11 (MphAtRpm 90 28.94)
          , "allPairs" ~: allExpected ~=? allPairs allFront allRear GearRatio
+         , "parseArgs GearRatio" ~: CliArgs { front = [1,2], rear = [3,4], units = GearRatio } ~=? parseArgs ["-f", "1", "2", "-r", "3", "4", "-u", "gearRatio"]
+         , "parseArgs GearInches" ~: CliArgs { front = [1], rear = [2,3], units = GearInches 12.3 } ~=? parseArgs ["-f", "1", "-r", "2", "3", "-u", "gearInches", "12.3"]
+         , "parseArgs MphAtRpm" ~: CliArgs { front = [1], rear = [2,3], units = MphAtRpm 80 12.3 } ~=? parseArgs ["-f", "1", "-r", "2", "3", "-u", "mphAtRpm", "80", "12.3"]
+         , "parseIntList non-empty" ~: ([1, 2], ["x"]) ~=? parseIntList ["1", "2", "x"]
          ]
 
 run = runTestTT tests
