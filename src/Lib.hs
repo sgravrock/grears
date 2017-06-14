@@ -26,8 +26,9 @@ parseArgs args =
         Nothing -> Nothing
         Just (front, rest0) -> case parseGearList rest0 "-r" of
             Nothing -> Nothing
-            Just (rear, rest1) ->
-                Just (CliArgs front rear (parseUnits rest1))
+            Just (rear, rest1) -> case parseUnits rest1 of
+                Nothing -> Nothing
+                Just u -> Just (CliArgs front rear u)
 
 parseGearList :: [String] -> String -> Maybe ([Integer], [String])
 parseGearList [] _ = Nothing
@@ -52,14 +53,14 @@ parseIntList (x:xs) = case readMaybeInteger x of
 readMaybeInteger :: String -> Maybe Integer
 readMaybeInteger s = readMaybe s
 
-parseUnits :: [String] -> ResultUnits
+parseUnits :: [String] -> Maybe ResultUnits
 -- TODO verify the -u
 parseUnits (flag:(x:xs)) = case x of
-                      "gearRatio" -> GearRatio
-                      "gearInches" -> GearInches (read (head xs))
+                      "gearRatio" -> Just GearRatio
+                      "gearInches" -> Just (GearInches (read (head xs)))
                       "mphAtRpm" -> let (r:(d:xxs)) = xs in
-                        MphAtRpm (read r) (read d)
-                      otherwise -> error ("nope: " ++ x)
+                        Just (MphAtRpm (read r) (read d))
+                      otherwise -> Nothing
 
 onePair :: Integer -> Integer -> ResultUnits -> Float
 onePair x y GearRatio = ratio x y
