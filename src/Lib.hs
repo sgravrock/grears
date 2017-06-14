@@ -3,6 +3,7 @@ module Lib
     , ResultUnits(..)
     , parseArgs
     , parseIntList
+    , consume
     , onePair
     , allPairs
     ) where
@@ -21,20 +22,20 @@ data ResultUnits = GearRatio
                  deriving (Eq, Show)
 
 parseArgs :: [String] -> Maybe CliArgs
-parseArgs args =
-    case parseGearList args "-f" of
-        Nothing -> Nothing
-        Just (front, rest0) -> case parseGearList rest0 "-r" of
-            Nothing -> Nothing
-            Just (rear, rest1) -> case parseUnits rest1 of
-                Nothing -> Nothing
-                Just u -> Just (CliArgs front rear u)
+parseArgs args = do
+    (front, rest0) <- parseGearList args "-f"
+    (rear, rest1) <- parseGearList rest0 "-r"
+    units <- parseUnits rest1
+    Just (CliArgs front rear units)
 
 parseGearList :: [String] -> String -> Maybe ([Integer], [String])
-parseGearList [] _ = Nothing
-parseGearList (x:xs) flag
-    | x == flag = parseNonEmptyIntList xs
+parseGearList args flag = consume flag args parseNonEmptyIntList
+
+consume :: String -> [String] -> ([String] -> Maybe a) -> Maybe a
+consume prefix (x:xs) f
+    | x == prefix = f xs
     | otherwise = Nothing
+
 
 parseNonEmptyIntList :: [String] -> Maybe([Integer], [String])
 parseNonEmptyIntList args =

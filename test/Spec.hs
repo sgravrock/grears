@@ -16,6 +16,9 @@ isOk :: Maybe a -> Bool
 isOk (Just _) = True
 isOk Nothing = False
 
+inc :: Integer -> Maybe Integer
+inc x = Just (x + 1)
+
 tests =
     let ?epsilon = 0.1 in
     test [ "GearRatio" ~: 0.67 ~~? onePair 24 36 GearRatio
@@ -29,6 +32,8 @@ tests =
          , "parseArgs bad units" ~: Nothing ~=? parseArgs ["-f", "1", "2", "-r", "3", "4", "-u", "bogus"]
          , "parseIntList non-empty" ~: ([1, 2], ["x"]) ~=? parseIntList ["1", "2", "x"]
          , "parseIntList empty" ~: ([], ["x"]) ~=? parseIntList ["x"]
+         , "consume match" ~: Just("foo") ~=? consume "-x" ["-x", "foo"] (\x -> Just (head x))
+         , "consume mismatch" ~: Nothing ~=? consume "-x" ["foo"] (\x -> Just 1)
          ]
 
 run = runTestTT tests
