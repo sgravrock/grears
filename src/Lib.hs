@@ -1,6 +1,5 @@
 module Lib
     ( CliArgs(..)
---    , ArgParseResult(..)
     , ResultUnits(..)
     , parseArgs
     , parseIntList
@@ -16,27 +15,32 @@ data CliArgs = CliArgs
     , units :: ResultUnits
     } deriving (Eq, Show)
 
---data ArgParseResult = ArgsOk CliArgs | ArgsBad String deriving (Eq, Show)
-
 data ResultUnits = GearRatio
                  | GearInches { diameter :: Float }
                  | MphAtRpm { rpm :: Integer, diameter :: Float }
                  deriving (Eq, Show)
 
-parseArgs :: [String] -> CliArgs --ArgParseResult
+parseArgs :: [String] -> Maybe CliArgs
 parseArgs args =
-    let (front, rest0) = parseFrontGears args
-        (rear, rest1) = parseRearGears rest0
-        units = parseUnits rest1
-    in CliArgs front rear units
+    case parseGearList args "-f" of
+        Nothing -> Nothing
+        Just (front, rest0) -> case parseGearList rest0 "-r" of
+            Nothing -> Nothing
+            Just (rear, rest1) ->
+                Just (CliArgs front rear (parseUnits rest1))
 
-parseFrontGears :: [String] -> ([Integer], [String])
--- TODO verify the -f
-parseFrontGears (x:xs) = parseIntList xs
+parseGearList :: [String] -> String -> Maybe ([Integer], [String])
+parseGearList [] _ = Nothing
+parseGearList (x:xs) flag
+    | x == flag = parseNonEmptyIntList xs
+    | otherwise = Nothing
 
-parseRearGears :: [String] -> ([Integer], [String])
--- TODO verify the -r
-parseRearGears (x:xs) = parseIntList xs
+parseNonEmptyIntList :: [String] -> Maybe([Integer], [String])
+parseNonEmptyIntList args =
+    let (list, rest) = parseIntList args in
+        if length list > 0
+            then Just (list, rest)
+            else Nothing
 
 parseIntList :: [String] -> ([Integer], [String])
 parseIntList (x:xs) = case readMaybeInteger x of
