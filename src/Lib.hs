@@ -55,8 +55,10 @@ readMaybeInteger :: String -> Maybe Integer
 readMaybeInteger s = readMaybe s
 
 parseUnits :: [String] -> Maybe ResultUnits
--- TODO verify the -u
-parseUnits (flag:(x:xs)) = case x of
+parseUnits args = consume "-u" args parseUnits2
+
+parseUnits2 :: [String] -> Maybe ResultUnits
+parseUnits2 (x:xs) = case x of
                       "gearRatio" -> Just GearRatio
                       "gearInches" -> Just (GearInches (read (head xs)))
                       "mphAtRpm" -> let (r:(d:xxs)) = xs in

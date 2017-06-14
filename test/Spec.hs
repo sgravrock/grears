@@ -28,6 +28,7 @@ tests =
          , "parseArgs GearRatio" ~: Just CliArgs { front = [1,2], rear = [3,4], units = GearRatio } ~=? parseArgs ["-f", "1", "2", "-r", "3", "4", "-u", "gearRatio"]
          , "parseArgs GearInches" ~: Just CliArgs { front = [1], rear = [2,3], units = GearInches 12.3 } ~=? parseArgs ["-f", "1", "-r", "2", "3", "-u", "gearInches", "12.3"]
          , "parseArgs MphAtRpm" ~: Just CliArgs { front = [1], rear = [2,3], units = MphAtRpm 80 12.3 } ~=? parseArgs ["-f", "1", "-r", "2", "3", "-u", "mphAtRpm", "80", "12.3"]
+         , "parseArgs missing flag" ~: Nothing ~=? parseArgs ["-f", "1", "2", "-r", "3", "4", "gearRatio"]
          , "parseArgs empty gears" ~: False ~=? isOk (parseArgs ["-f", "-r", "3", "4", "-u", "gearRatio"])
          , "parseArgs bad units" ~: Nothing ~=? parseArgs ["-f", "1", "2", "-r", "3", "4", "-u", "bogus"]
          , "parseIntList non-empty" ~: ([1, 2], ["x"]) ~=? parseIntList ["1", "2", "x"]
