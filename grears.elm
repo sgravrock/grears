@@ -34,6 +34,15 @@ update msg model =
     Rear s ->
       { model | rear = s }
 
+isValid : Model -> Bool
+isValid model = isValidInt model.front && isValidInt model.rear
+
+isValidInt : String -> Bool
+isValidInt s =
+  case String.toInt s of
+    Ok _ -> True
+    Err _ -> False
+
 -- VIEW
 
 view : Model -> Html Msg
@@ -49,8 +58,7 @@ view model =
         legend [] [ text "Rear gears" ]
       , intField Rear model.rear
       ]
-    , div [] [ text "Front: ", text (display model.front) ]
-    , div [] [ text "Rear: ", text (display model.rear) ]
+    , div [] [ text "Ratio: ", text (result model) ]
     ]
 
 intField : (String -> Msg) -> String -> Html Msg
@@ -61,12 +69,12 @@ fieldClass : String -> String
 fieldClass value =
   case value of
     "" -> ""
-    _ -> case String.toInt value of
-      Ok _ -> ""
-      Err _ -> "invalid"
+    _ -> if isValidInt value then "" else "invalid"
 
-display : String -> String
-display value = 
-  case String.toInt value of
-    Ok _ -> value
+result : Model -> String
+result model =
+  case String.toInt model.front of
     Err _ -> ""
+    Ok f -> case String.toInt model.rear of
+      Err _ -> ""
+      Ok r -> toString (toFloat f / toFloat r)
