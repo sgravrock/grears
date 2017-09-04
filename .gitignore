@@ -1,3 +1,7 @@
+elm-stuff
+
+# Haskell/Cabal stuff
+
 dist
 dist-*
 cabal-dev
