@@ -106,5 +106,14 @@ formattedResults model =
 formatResult: Maybe Float -> String
 formatResult result =
   case result of
-    Just n -> toString n
+    Just n -> formatFloat n 2
     Nothing -> ""
+
+
+formatFloat : Float -> Int -> String
+formatFloat f nDecimals =
+  let
+    shift = toFloat (10 ^ nDecimals)
+    rounded = (toFloat (round (f * shift))) / shift
+  in
+    toString rounded
