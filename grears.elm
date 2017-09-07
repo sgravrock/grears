@@ -1,11 +1,9 @@
+module Grears exposing (..)
+
 import Html exposing (Html, div, text, fieldset, legend, input)
 import Html.Attributes exposing (type_, class, rel, href, size)
 import Html.Events exposing (onInput)
 import Array
-
-
-main =
-  Html.beginnerProgram { model = model, view = view, update = update }
 
 
 -- MODEL
@@ -110,4 +108,3 @@ formatResult result =
   case result of
     Just n -> toString n
     Nothing -> ""
-
