@@ -1,5 +1,5 @@
 import Html exposing (Html, div, text, fieldset, legend, input)
-import Html.Attributes exposing (type_, class, rel, href)
+import Html.Attributes exposing (type_, class, rel, href, size)
 import Html.Events exposing (onInput)
 import Array
 
@@ -25,15 +25,15 @@ model =
 
 -- UPDATE
 
-type Msg = Front String | Rear String
+type Msg = Front String | Rear Int String
 
 update : Msg -> Model -> Model
 update msg model =
   case msg of
     Front s ->
       { model | front = s }
-    Rear s ->
-      { model | rear = Array.set 0 s model.rear }
+    Rear i s ->
+      { model | rear = Array.set i s model.rear }
 
 isValid : Model -> Bool
 isValid model = isValidInt model.front && isValidInt (stringAt 0 model.rear)
@@ -64,15 +64,22 @@ view model =
       ]
     , fieldset [] [
         legend [] [ text "Rear gears" ]
-      , intField Rear (stringAt 0 model.rear)
+      , div [] (Array.toList (Array.indexedMap rearGearField model.rear))
       ]
-    , div [] [ text "Ratio: ", text (result model) ]
+    , div [] [ text "Ratios: ", text (formattedResults model) ]
     , div [] [ text "v: ", text (toString (String.length (stringAt 0 model.rear))) ]
     ]
 
+rearGearField : Int -> String -> Html Msg
+rearGearField i value = intField (Rear i) value
+
 intField : (String -> Msg) -> String -> Html Msg
 intField updateFunc value =
-  input [ type_ "text", onInput updateFunc, class (fieldClass value) ] []
+  input [ type_ "text"
+        , onInput updateFunc
+        , class (fieldClass value)
+        , size 2
+        ] []
 
 fieldClass : String -> String
 fieldClass value =
@@ -80,10 +87,27 @@ fieldClass value =
     "" -> ""
     _ -> if isValidInt value then "" else "invalid"
 
-result : Model -> String
-result model =
-  case String.toInt model.front of
-    Err _ -> ""
-    Ok f -> case String.toInt (stringAt 0 model.rear) of
-      Err _ -> ""
-      Ok r -> toString (toFloat f / toFloat r)
+results : Model -> List (Maybe Float)
+results model = List.map (gearRatio model.front) (Array.toList model.rear)
+
+gearRatio : String -> String -> Maybe Float
+gearRatio front rear =
+  case String.toInt front of
+    Err _ -> Nothing
+    Ok f -> case String.toInt rear of
+      Err _ -> Nothing
+      Ok r -> Just (toFloat f / toFloat r)
+
+formattedResults : Model -> String
+formattedResults model =
+  let
+    rs = List.map formatResult (results model)
+  in
+    String.join ", " rs
+
+formatResult: Maybe Float -> String
+formatResult result =
+  case result of
+    Just n -> toString n
+    Nothing -> ""
+
