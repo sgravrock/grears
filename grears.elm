@@ -74,12 +74,6 @@ setAt i value list =
   in
     Array.toList a
 
-isValidInt : String -> Bool
-isValidInt s =
-  case String.toInt s of
-    Ok _ -> True
-    Err _ -> False
-
 -- VIEW
 
 view : Model -> Html Msg
@@ -98,7 +92,7 @@ view model =
     , unitSelectBox model
     , label []
       [ span [class "label"] [text "Wheel diameter in inches"]
-      , intField SetWheelDia model.wheelDia
+      , wheelSizeField model.wheelDia
       ]
     , maybeResultsView model
     ]
@@ -135,12 +129,29 @@ intField : (String -> Msg) -> String -> Html Msg
 intField updateFunc value =
   input [ type_ "text"
         , onInput updateFunc
-        , class (fieldClass value)
+        , class (fieldClass (value == ""  || isValidInt value))
         , size 2
         ] []
 
-fieldClass : String -> String
-fieldClass value =
-  case value of
-    "" -> ""
-    _ -> if isValidInt value then "" else "invalid"
+wheelSizeField : String -> Html Msg
+wheelSizeField value =
+  input [ type_ "text"
+        , onInput SetWheelDia
+        , class (fieldClass (isValidFloat value))
+        , size 5
+        ] []
+
+fieldClass : Bool -> String
+fieldClass isValid = if isValid then "" else "invalid"
+
+isValidInt : String -> Bool
+isValidInt s =
+  case String.toInt s of
+    Ok _ -> True
+    Err _ -> False
+
+isValidFloat : String -> Bool
+isValidFloat s =
+  case String.toFloat s of
+    Ok _ -> True
+    Err _ -> False
