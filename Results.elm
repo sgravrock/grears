@@ -2,18 +2,12 @@ module Results exposing (view, formatFloat)
 
 import Html exposing (Html, text, table, thead, tbody, tr, th, td, div)
 import Html.Attributes exposing (scope)
-import Types exposing (Model, Msg(..))
+import Types exposing (ValidModel, Msg(..))
 
-view : Maybe Model -> Html Msg
-view maybeModel =
-  case maybeModel of
-    Just model -> validView model
-    Nothing -> div [] []
-
-validView : Model -> Html Msg
-validView model =
+view : ValidModel -> Html Msg
+view model =
   let
-    bodyColHeaders = List.map colHeader model.fronts
+    bodyColHeaders = List.map colHeader (List.map toString model.fronts)
     colHeaders = emptyHeader :: bodyColHeaders
   in
     table []
@@ -28,35 +22,26 @@ emptyHeader = th [] []
 colHeader : String -> Html Msg
 colHeader label =  th [scope "col"] [text label]
 
-row : List String -> String -> Html Msg
+row : List Int -> Int -> Html Msg
 row fronts rear =
   let
-    rowHeader = th [scope "row"] [text rear]
+    rowHeader = th [scope "row"] [text (toString rear)]
     bodyCells = List.map (singleResultCell rear) fronts
   in
     tr [] (rowHeader :: bodyCells)
 
-singleResultCell : String -> String -> Html Msg
+singleResultCell : Int -> Int -> Html Msg
 singleResultCell rear front =
   let
     ratio = formatResult (gearRatio front rear)
   in
     td [] [text ratio]
 
-gearRatio : String -> String -> Maybe Float
-gearRatio front rear =
-  case String.toInt front of
-    Err _ -> Nothing
-    Ok f -> case String.toInt rear of
-      Err _ -> Nothing
-      Ok r -> Just (toFloat f / toFloat r)
+gearRatio : Int -> Int -> Float
+gearRatio front rear = (toFloat front / toFloat rear)
 
-
-formatResult: Maybe Float -> String
-formatResult result =
-  case result of
-    Just n -> formatFloat n 2
-    Nothing -> ""
+formatResult: Float -> String
+formatResult result = formatFloat result 2
 
 formatFloat : Float -> Int -> String
 formatFloat f nDecimals =

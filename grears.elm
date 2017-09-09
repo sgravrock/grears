@@ -4,7 +4,7 @@ import Html exposing (Html, div, text, fieldset, legend, input)
 import Html.Attributes exposing (type_, class, rel, href, size)
 import Html.Events exposing (onInput)
 import Array
-import Types exposing (Model, Msg(..))
+import Types exposing (Model, ValidModel, Msg(..))
 import Results
 
 
@@ -16,12 +16,12 @@ model =
   , rears = List.repeat 11 ""
   }
 
-validateModel : Model -> Maybe Model
+validateModel : Model -> Maybe ValidModel
 validateModel model =
   let
     filtered = 
-      { fronts = List.filter isValidInt model.fronts
-      , rears = List.filter isValidInt model.rears
+      { fronts = onlyInts model.fronts
+      , rears = onlyInts model.rears
       }
   in
     if filtered.fronts == [] || filtered.rears == [] then
@@ -29,6 +29,11 @@ validateModel model =
     else
       Just filtered
 
+onlyInts : List String -> List Int
+onlyInts strings = filterMapResult (List.map String.toInt strings)
+
+filterMapResult : List (Result error value) -> List value
+filterMapResult list = List.filterMap Result.toMaybe list
 
 
 -- UPDATE
@@ -69,8 +74,14 @@ view model =
         legend [] [ text "Rear gears" ]
       , div [] (List.indexedMap rearGearField model.rears)
       ]
-    , Results.view (validateModel model)
+    , maybeResultsView model
     ]
+
+maybeResultsView : Model -> Html Msg
+maybeResultsView model =
+  case validateModel model of
+    Just validModel -> Results.view validModel
+    Nothing -> div [] []
 
 frontGearField : Int -> String -> Html Msg
 frontGearField i value = intField (SetFront i) value

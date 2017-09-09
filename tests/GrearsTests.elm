@@ -3,7 +3,7 @@ module GrearsTests exposing (..)
 import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, list, string)
 import Test exposing (..)
-import Grears exposing (validateModel)
+import Grears exposing (validateModel, filterMapResult)
 import Results exposing (formatFloat)
 
 
@@ -27,8 +27,8 @@ all =
               , rears = ["2"]
               }
             expected =
-              { fronts = ["1"]
-              , rears = ["2"]
+              { fronts = [1]
+              , rears = [2]
               }
           in
             Expect.equal (validateModel model) (Just expected)
@@ -40,8 +40,8 @@ all =
               , rears = ["", "three", "2"]
               }
             expected =
-              { fronts = ["1"]
-              , rears = ["2"]
+              { fronts = [1]
+              , rears = [2]
               }
           in
             Expect.equal (validateModel model) (Just expected)
@@ -63,5 +63,13 @@ all =
               }
           in
             Expect.equal (validateModel model) Nothing
+      ]
+    , describe "filterMapResult"
+      [ test "like List.filterMap but for Result instead of Maybe" <|
+        \() ->
+          let
+            input = [(Ok "foo"), (Err "nope")]
+          in
+            Expect.equal (filterMapResult input) ["foo"]
       ]
     ]

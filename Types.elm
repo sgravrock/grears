@@ -1,8 +1,13 @@
-module Types exposing(Model, Msg(..))
+module Types exposing(Model, ValidModel, Msg(..))
 
 type alias Model =
   { fronts : List String
   , rears : List String
+  }
+
+type alias ValidModel =
+  { fronts: List Int
+  , rears: List Int
   }
 
 
