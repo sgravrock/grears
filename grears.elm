@@ -1,10 +1,13 @@
 module Grears exposing (..)
 
-import Html exposing (Html, div, text, fieldset, legend, input)
-import Html.Attributes exposing (type_, class, rel, href, size)
-import Html.Events exposing (onInput)
+import Html exposing (Html, div, text, fieldset, legend, input, select, option, label, span)
+import Html.Attributes exposing (type_, class, rel, href, size, id, for, selected)
+import Html.Events exposing (onInput, on)
 import Array
-import Types exposing (Model, ValidModel, Msg(..))
+import Select
+
+
+import Types exposing (Model, ValidModel, ResultUnit(..), ValidResultUnit(..), Msg(..))
 import Results
 
 
@@ -14,26 +17,41 @@ model : Model
 model =
   { fronts = List.repeat 3 ""
   , rears = List.repeat 11 ""
+  , unit = Ratio
+  , wheelDia = ""
   }
 
 validateModel : Model -> Maybe ValidModel
 validateModel model =
   let
-    filtered = 
-      { fronts = onlyInts model.fronts
-      , rears = onlyInts model.rears
-      }
+    fronts = onlyInts model.fronts
+    rears = onlyInts model.rears
   in
-    if filtered.fronts == [] || filtered.rears == [] then
+    if fronts == [] || rears == [] then
       Nothing
     else
-      Just filtered
+      case validateUnits model of
+        Nothing -> Nothing
+        Just unit -> Just
+          { fronts = fronts
+          , rears = rears
+          , unit = unit
+          }
 
 onlyInts : List String -> List Int
-onlyInts strings = filterMapResult (List.map String.toInt strings)
+onlyInts strings = List.filterMap identity (List.map toMaybeInt strings)
 
-filterMapResult : List (Result error value) -> List value
-filterMapResult list = List.filterMap Result.toMaybe list
+validateUnits : Model -> Maybe ValidResultUnit
+validateUnits model =
+  case model.unit of
+    Ratio -> Just ValidRatio
+    GearInches -> Maybe.map ValidGearInches (toMaybeFloat model.wheelDia)
+
+toMaybeInt : String -> Maybe Int
+toMaybeInt s = Result.toMaybe (String.toInt s)
+
+toMaybeFloat : String -> Maybe Float
+toMaybeFloat s = Result.toMaybe (String.toFloat s)
 
 
 -- UPDATE
@@ -45,6 +63,9 @@ update msg model =
       { model | fronts = setAt i s model.fronts }
     SetRear i s ->
       { model | rears = setAt i s model.rears }
+    SetUnit u -> { model | unit = u }
+    SetWheelDia s -> { model | wheelDia = s }
+    
 
 setAt : Int -> String -> List String -> List String
 setAt i value list =
@@ -74,9 +95,30 @@ view model =
         legend [] [ text "Rear gears" ]
       , div [] (List.indexedMap rearGearField model.rears)
       ]
+    , unitSelectBox model
+    , label []
+      [ span [class "label"] [text "Wheel diameter in inches"]
+      , intField SetWheelDia model.wheelDia
+      ]
     , maybeResultsView model
     ]
 
+unitSelectBox : Model -> Html Msg
+unitSelectBox model =
+  let
+    units = [Ratio, GearInches]
+  in
+    label []
+    [ span [class "label"] [text "Unit"]
+    , Select.fromSelected_ units SetUnit toString unitLabel model.unit
+    ]
+
+unitLabel : ResultUnit -> String
+unitLabel u =
+  case u of
+    Ratio -> "Ratio"
+    GearInches -> "Gear inches"
+    
 maybeResultsView : Model -> Html Msg
 maybeResultsView model =
   case validateModel model of

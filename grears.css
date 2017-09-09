@@ -1,1 +1,5 @@
 .invalid { background: red; }
+
+.label { margin-top: 1em; }
+.label, input { display: block; }
+fieldset input { display: inline; }

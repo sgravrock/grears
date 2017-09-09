@@ -3,7 +3,9 @@ module GrearsTests exposing (..)
 import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, list, string)
 import Test exposing (..)
-import Grears exposing (validateModel, filterMapResult)
+import Types exposing (Model, ValidModel, ResultUnit(..), ValidResultUnit(..))
+
+import Grears exposing (validateModel)
 import Results exposing (formatFloat)
 
 
@@ -22,54 +24,79 @@ all =
       [ test "filters invalid chainrings" <|
         \() ->
           let
-            model =
-              { fronts = ["", "bob", "1"]
-              , rears = ["2"]
-              }
-            expected =
-              { fronts = [1]
-              , rears = [2]
-              }
+            model = modelForGears ["", "bob", "1"] ["2"]
+            expected = validModelForGears [1] [2]
           in
             Expect.equal (validateModel model) (Just expected)
       , test "filters invalid cogs" <|
         \() ->
           let
-            model =
-              { fronts = ["1"]
-              , rears = ["", "three", "2"]
-              }
-            expected =
-              { fronts = [1]
-              , rears = [2]
-              }
+            model = modelForGears ["1"] ["", "three", "2"]
+            expected = validModelForGears [1] [2]
           in
             Expect.equal (validateModel model) (Just expected)
       , test "requires at least one valid chainring" <|
         \() ->
           let
-            model =
-              { fronts = ["", "fifty two"]
-              , rears = ["1"]
-              }
+            model = modelForGears ["", "fifty two"] ["1"]
           in
             Expect.equal (validateModel model) Nothing
       , test "requires at least one valid cog" <|
         \() ->
           let
-            model =
-              { fronts = ["1"]
-              , rears = ["", "fifty two"]
-              }
+            model = modelForGears ["1"] ["", "fifty two"]
           in
             Expect.equal (validateModel model) Nothing
-      ]
-    , describe "filterMapResult"
-      [ test "like List.filterMap but for Result instead of Maybe" <|
+      , test "accepts Ratio" <|
         \() ->
           let
-            input = [(Ok "foo"), (Err "nope")]
+            model = modelForUnit Ratio
+            expected = validModelForUnit ValidRatio
           in
-            Expect.equal (filterMapResult input) ["foo"]
+            Expect.equal (validateModel model) (Just expected)
+      , test "rejects gear inches without wheel size" <|
+        \() ->
+          let
+            model = modelForUnit GearInches
+          in
+            Expect.equal (validateModel model) Nothing
+      , test "accepts gear inches with wheel size" <|
+        \() ->
+          let
+            tmp = modelForUnit GearInches
+            model = { tmp | wheelDia = "1" }
+            expected = validModelForUnit (ValidGearInches 1)
+          in
+            Expect.equal (validateModel model) (Just expected)
       ]
     ]
+
+modelForGears : List String -> List String -> Model
+modelForGears fronts rears = 
+  { fronts = fronts
+  , rears = rears
+  , unit = Ratio
+  , wheelDia = ""
+  }
+
+validModelForGears : List Int -> List Int -> ValidModel
+validModelForGears fronts rears = 
+  { fronts = fronts
+  , rears = rears
+  , unit = ValidRatio
+  }
+
+modelForUnit : ResultUnit -> Model
+modelForUnit unit =
+  { fronts = ["1"]
+  , rears = ["1"]
+  , wheelDia = ""
+  , unit = unit
+  }
+
+validModelForUnit : ValidResultUnit -> ValidModel
+validModelForUnit unit =
+  { fronts = [1]
+  , rears = [1]
+  , unit = unit
+  }
