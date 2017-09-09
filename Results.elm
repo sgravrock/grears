@@ -7,26 +7,36 @@ import Types exposing (Model, Msg(..))
 
 view : Model -> Html Msg
 view model =
-  table []
-    [ thead []
-        [ tr []
-          [ th [] []
-          , th [scope "col"] [text model.front]
-          ]
-        ]
-    , tbody [] (List.map (row model.front) (Array.toList model.rears))
-    ]
+  let
+    bodyColHeaders = List.map colHeader (Array.toList model.fronts)
+    colHeaders = emptyHeader :: bodyColHeaders
+  in
+    table []
+      [ thead [] [tr [] colHeaders]
+      , tbody [] (List.map (row model.fronts) (Array.toList model.rears))
+      ]
 
-row : String -> String -> Html Msg
-row front rear =
+
+emptyHeader : Html Msg
+emptyHeader = th [] []
+
+colHeader : String -> Html Msg
+colHeader label =  th [scope "col"] [text label]
+
+row : Array.Array String -> String -> Html Msg
+row fronts rear =
+  let
+    rowHeader = th [scope "row"] [text rear]
+    bodyCells = List.map (singleResultCell rear) (Array.toList fronts)
+  in
+    tr [] (rowHeader :: bodyCells)
+
+singleResultCell : String -> String -> Html Msg
+singleResultCell rear front =
   let
     ratio = formatResult (gearRatio front rear)
   in
-    tr []
-      [ th [scope "row"] [text rear]
-      , td [] [text ratio]
-      ]
-
+    td [] [text ratio]
 
 gearRatio : String -> String -> Maybe Float
 gearRatio front rear =

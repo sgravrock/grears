@@ -12,9 +12,10 @@ import Results
 
 model : Model
 model =
-  { front = ""
-  , rears = Array.fromList (List.repeat 11 "")
+  { fronts = Array.repeat 3 ""
+  , rears = Array.repeat 11 ""
   }
+
 
 
 -- UPDATE
@@ -22,13 +23,11 @@ model =
 update : Msg -> Model -> Model
 update msg model =
   case msg of
-    SetFront s ->
-      { model | front = s }
+    SetFront i s ->
+      { model | fronts = Array.set i s model.fronts }
     SetRear i s ->
       { model | rears = Array.set i s model.rears }
 
-isValid : Model -> Bool
-isValid model = isValidInt model.front && isValidInt (stringAt 0 model.rears)
 
 isValidInt : String -> Bool
 isValidInt s =
@@ -52,7 +51,7 @@ view model =
       Html.node "link" [ rel "stylesheet", href "grears.css" ] []
     , fieldset [] [
         legend [] [ text "Front gears" ]
-      , intField SetFront model.front
+      , div [] (Array.toList (Array.indexedMap frontGearField model.fronts))
       ]
     , fieldset [] [
         legend [] [ text "Rear gears" ]
@@ -60,6 +59,9 @@ view model =
       ]
     , Results.view model
     ]
+
+frontGearField : Int -> String -> Html Msg
+frontGearField i value = intField (SetFront i) value
 
 rearGearField : Int -> String -> Html Msg
 rearGearField i value = intField (SetRear i) value
