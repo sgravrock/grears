@@ -90,10 +90,13 @@ view model =
       , div [] (List.indexedMap rearGearField model.rears)
       ]
     , unitSelectBox model
-    , label []
-      [ span [class "label"] [text "Wheel diameter in inches"]
-      , wheelSizeField model.wheelDia
-      ]
+    , if model.unit == GearInches then
+        label []
+          [ span [class "label"] [text "Wheel diameter in inches"]
+          , wheelSizeField model.wheelDia
+          ]
+      else
+        span [] []
     , maybeResultsView model
     ]
 
@@ -131,6 +134,7 @@ intField updateFunc value =
         , onInput updateFunc
         , class (fieldClass (value == ""  || isValidInt value))
         , size 2
+        , Html.Attributes.value value
         ] []
 
 wheelSizeField : String -> Html Msg
@@ -139,6 +143,7 @@ wheelSizeField value =
         , onInput SetWheelDia
         , class (fieldClass (isValidFloat value))
         , size 5
+        , Html.Attributes.value value
         ] []
 
 fieldClass : Bool -> String
