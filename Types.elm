@@ -5,8 +5,8 @@ import Array
 
 type alias Model =
   { front : String
-  , rear : Array.Array String
+  , rears : Array.Array String
   }
 
 
-type Msg = Front String | Rear Int String
+type Msg = SetFront String | SetRear Int String

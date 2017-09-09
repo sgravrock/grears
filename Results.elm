@@ -14,7 +14,7 @@ view model =
           , th [scope "col"] [text model.front]
           ]
         ]
-    , tbody [] (List.map (row model.front) (Array.toList model.rear))
+    , tbody [] (List.map (row model.front) (Array.toList model.rears))
     ]
 
 row : String -> String -> Html Msg

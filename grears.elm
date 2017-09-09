@@ -13,7 +13,7 @@ import Results
 model : Model
 model =
   { front = ""
-  , rear = Array.fromList (List.repeat 11 "")
+  , rears = Array.fromList (List.repeat 11 "")
   }
 
 
@@ -22,13 +22,13 @@ model =
 update : Msg -> Model -> Model
 update msg model =
   case msg of
-    Front s ->
+    SetFront s ->
       { model | front = s }
-    Rear i s ->
-      { model | rear = Array.set i s model.rear }
+    SetRear i s ->
+      { model | rears = Array.set i s model.rears }
 
 isValid : Model -> Bool
-isValid model = isValidInt model.front && isValidInt (stringAt 0 model.rear)
+isValid model = isValidInt model.front && isValidInt (stringAt 0 model.rears)
 
 isValidInt : String -> Bool
 isValidInt s =
@@ -52,17 +52,17 @@ view model =
       Html.node "link" [ rel "stylesheet", href "grears.css" ] []
     , fieldset [] [
         legend [] [ text "Front gears" ]
-      , intField Front model.front
+      , intField SetFront model.front
       ]
     , fieldset [] [
         legend [] [ text "Rear gears" ]
-      , div [] (Array.toList (Array.indexedMap rearGearField model.rear))
+      , div [] (Array.toList (Array.indexedMap rearGearField model.rears))
       ]
     , Results.view model
     ]
 
 rearGearField : Int -> String -> Html Msg
-rearGearField i value = intField (Rear i) value
+rearGearField i value = intField (SetRear i) value
 
 intField : (String -> Msg) -> String -> Html Msg
 intField updateFunc value =
