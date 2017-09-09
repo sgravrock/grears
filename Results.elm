@@ -1,11 +1,17 @@
 module Results exposing (view, formatFloat)
 
-import Html exposing (Html, text, table, thead, tbody, tr, th, td)
+import Html exposing (Html, text, table, thead, tbody, tr, th, td, div)
 import Html.Attributes exposing (scope)
 import Types exposing (Model, Msg(..))
 
-view : Model -> Html Msg
-view model =
+view : Maybe Model -> Html Msg
+view maybeModel =
+  case maybeModel of
+    Just model -> validView model
+    Nothing -> div [] []
+
+validView : Model -> Html Msg
+validView model =
   let
     bodyColHeaders = List.map colHeader model.fronts
     colHeaders = emptyHeader :: bodyColHeaders

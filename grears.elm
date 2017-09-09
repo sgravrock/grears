@@ -16,6 +16,19 @@ model =
   , rears = List.repeat 11 ""
   }
 
+validateModel : Model -> Maybe Model
+validateModel model =
+  let
+    filtered = 
+      { fronts = List.filter isValidInt model.fronts
+      , rears = List.filter isValidInt model.rears
+      }
+  in
+    if filtered.fronts == [] || filtered.rears == [] then
+      Nothing
+    else
+      Just filtered
+
 
 
 -- UPDATE
@@ -56,7 +69,7 @@ view model =
         legend [] [ text "Rear gears" ]
       , div [] (List.indexedMap rearGearField model.rears)
       ]
-    , Results.view model
+    , Results.view (validateModel model)
     ]
 
 frontGearField : Int -> String -> Html Msg
