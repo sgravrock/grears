@@ -6,7 +6,7 @@ import Test exposing (..)
 import Types exposing (Model, ValidModel, ResultUnit(..), ValidResultUnit(..))
 
 import Grears exposing (validateModel)
-import Results exposing (formatFloat)
+import Results exposing (formatFloat, calculateResult)
 
 
 all : Test
@@ -68,6 +68,20 @@ all =
             expected = validModelForUnit (ValidGearInches 1)
           in
             Expect.equal (validateModel model) (Just expected)
+      ]
+    , describe "calculateResult"
+      [ test "calculates ratios" <|
+        \() ->
+          let
+            result = calculateResult 52 11 ValidRatio
+          in
+            Expect.within (Expect.Relative 0.01) 4.73 result
+      , test "calculates gear inches" <|
+        \() ->
+          let
+            result = calculateResult 52 11 (ValidGearInches 27.32)
+          in
+            Expect.within (Expect.Relative 0.01) 129.1 result
       ]
     ]
 
