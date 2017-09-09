@@ -1,22 +1,31 @@
-module Results exposing (view)
+module Results exposing (view, formatFloat)
 
-import Html exposing (Html, div, text)
+import Html exposing (Html, text, table, thead, tbody, tr, th, td)
+import Html.Attributes exposing (scope)
 import Array
-import Msg exposing (Msg)
+import Types exposing (Model, Msg(..))
 
-view : String -> Array.Array String -> Html Msg
-view front rears =
-  div [] [ text "Ratios: ", text (formattedResults front rears) ]
+view : Model -> Html Msg
+view model =
+  table []
+    [ thead []
+        [ tr []
+          [ th [] []
+          , th [scope "col"] [text model.front]
+          ]
+        ]
+    , tbody [] (List.map (row model.front) (Array.toList model.rear))
+    ]
 
-formattedResults: String -> Array.Array String -> String
-formattedResults front rears =
+row : String -> String -> Html Msg
+row front rear =
   let
-    rs = List.map formatResult (results front rears)
+    ratio = formatResult (gearRatio front rear)
   in
-    String.join ", " rs
-
-results : String -> Array.Array String -> List (Maybe Float)
-results front rears = List.map (gearRatio front) (Array.toList rears)
+    tr []
+      [ th [scope "row"] [text rear]
+      , td [] [text ratio]
+      ]
 
 
 gearRatio : String -> String -> Maybe Float

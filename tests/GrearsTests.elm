@@ -3,7 +3,7 @@ module GrearsTests exposing (..)
 import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, list, string)
 import Test exposing (..)
-import Grears exposing (formatFloat)
+import Results exposing (formatFloat)
 
 
 -- suite : Test

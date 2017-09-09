@@ -4,17 +4,11 @@ import Html exposing (Html, div, text, fieldset, legend, input)
 import Html.Attributes exposing (type_, class, rel, href, size)
 import Html.Events exposing (onInput)
 import Array
-import Msg exposing (Msg)
+import Types exposing (Model, Msg(..))
 import Results
 
 
 -- MODEL
-
-
-type alias Model =
-  { front : String
-  , rear : Array.Array String
-  }
 
 model : Model
 model =
@@ -28,9 +22,9 @@ model =
 update : Msg -> Model -> Model
 update msg model =
   case msg of
-    Msg.Front s ->
+    Front s ->
       { model | front = s }
-    Msg.Rear i s ->
+    Rear i s ->
       { model | rear = Array.set i s model.rear }
 
 isValid : Model -> Bool
@@ -58,17 +52,17 @@ view model =
       Html.node "link" [ rel "stylesheet", href "grears.css" ] []
     , fieldset [] [
         legend [] [ text "Front gears" ]
-      , intField Msg.Front model.front
+      , intField Front model.front
       ]
     , fieldset [] [
         legend [] [ text "Rear gears" ]
       , div [] (Array.toList (Array.indexedMap rearGearField model.rear))
       ]
-    , Results.view model.front model.rear
+    , Results.view model
     ]
 
 rearGearField : Int -> String -> Html Msg
-rearGearField i value = intField (Msg.Rear i) value
+rearGearField i value = intField (Rear i) value
 
 intField : (String -> Msg) -> String -> Html Msg
 intField updateFunc value =
