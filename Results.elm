@@ -2,18 +2,17 @@ module Results exposing (view, formatFloat)
 
 import Html exposing (Html, text, table, thead, tbody, tr, th, td)
 import Html.Attributes exposing (scope)
-import Array
 import Types exposing (Model, Msg(..))
 
 view : Model -> Html Msg
 view model =
   let
-    bodyColHeaders = List.map colHeader (Array.toList model.fronts)
+    bodyColHeaders = List.map colHeader model.fronts
     colHeaders = emptyHeader :: bodyColHeaders
   in
     table []
       [ thead [] [tr [] colHeaders]
-      , tbody [] (List.map (row model.fronts) (Array.toList model.rears))
+      , tbody [] (List.map (row model.fronts) model.rears)
       ]
 
 
@@ -23,11 +22,11 @@ emptyHeader = th [] []
 colHeader : String -> Html Msg
 colHeader label =  th [scope "col"] [text label]
 
-row : Array.Array String -> String -> Html Msg
+row : List String -> String -> Html Msg
 row fronts rear =
   let
     rowHeader = th [scope "row"] [text rear]
-    bodyCells = List.map (singleResultCell rear) (Array.toList fronts)
+    bodyCells = List.map (singleResultCell rear) fronts
   in
     tr [] (rowHeader :: bodyCells)
 

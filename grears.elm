@@ -12,8 +12,8 @@ import Results
 
 model : Model
 model =
-  { fronts = Array.repeat 3 ""
-  , rears = Array.repeat 11 ""
+  { fronts = List.repeat 3 ""
+  , rears = List.repeat 11 ""
   }
 
 
@@ -24,23 +24,22 @@ update : Msg -> Model -> Model
 update msg model =
   case msg of
     SetFront i s ->
-      { model | fronts = Array.set i s model.fronts }
+      { model | fronts = setAt i s model.fronts }
     SetRear i s ->
-      { model | rears = Array.set i s model.rears }
+      { model | rears = setAt i s model.rears }
 
+setAt : Int -> String -> List String -> List String
+setAt i value list =
+  let
+    a = Array.set i value (Array.fromList list)
+  in
+    Array.toList a
 
 isValidInt : String -> Bool
 isValidInt s =
   case String.toInt s of
     Ok _ -> True
     Err _ -> False
-
-stringAt : Int -> Array.Array String -> String
-stringAt i a =
-  case Array.get i a of
-    Just s -> s
-    Nothing -> ""
-
 
 -- VIEW
 
@@ -51,11 +50,11 @@ view model =
       Html.node "link" [ rel "stylesheet", href "grears.css" ] []
     , fieldset [] [
         legend [] [ text "Front gears" ]
-      , div [] (Array.toList (Array.indexedMap frontGearField model.fronts))
+      , div [] (List.indexedMap frontGearField model.fronts)
       ]
     , fieldset [] [
         legend [] [ text "Rear gears" ]
-      , div [] (Array.toList (Array.indexedMap rearGearField model.rears))
+      , div [] (List.indexedMap rearGearField model.rears)
       ]
     , Results.view model
     ]
