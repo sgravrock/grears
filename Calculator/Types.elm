@@ -1,4 +1,10 @@
-module Types exposing(Model, ValidModel, ResultUnit(..), ValidResultUnit(..), Msg(..))
+module Calculator.Types exposing (Msg(..), ResultUnit(..), Model, ValidModel, ValidResultUnit(..))
+
+type Msg
+  = SetFront Int String
+  | SetRear Int String
+  | SetUnit ResultUnit
+  | SetWheelDia String
 
 type ResultUnit
   = Ratio
@@ -20,10 +26,3 @@ type alias ValidModel =
   , rears : List Int
   , unit : ValidResultUnit
   }
-
-
-type Msg
-  = SetFront Int String
-  | SetRear Int String
-  | SetUnit ResultUnit
-  | SetWheelDia String

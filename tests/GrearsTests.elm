@@ -3,10 +3,10 @@ module GrearsTests exposing (..)
 import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, list, string)
 import Test exposing (..)
-import Types exposing (Model, ValidModel, ResultUnit(..), ValidResultUnit(..))
+import Calculator.Types exposing (Model, ValidModel, ResultUnit(..), ValidResultUnit(..))
 
-import Calculator exposing (validateModel)
-import Results exposing (formatFloat, calculateResult)
+import Calculator.State exposing (validateModel)
+import Calculator.ResultsView exposing (formatFloat, calculateResult)
 
 
 all : Test

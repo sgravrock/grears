@@ -1,12 +1,11 @@
-module CalculatorForm exposing (view)
+module Calculator.Form exposing (view)
 
 import Html exposing (Html, div, text, fieldset, legend, input, select, option, label, span)
 import Html.Attributes exposing (type_, class, size, id, for, selected)
 import Html.Events exposing (onInput)
 import Select
 
-
-import Types exposing (Model, Msg(..), ResultUnit(..))
+import Calculator.Types exposing (Msg(..), Model, ResultUnit(..))
 
 
 view : Model -> Html Msg

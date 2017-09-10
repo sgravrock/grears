@@ -1,16 +1,8 @@
-module Calculator exposing (..)
+module Calculator.State exposing (model, update, validateModel)
 
-import Html exposing (Html, div)
 import Array
-import Select
+import Calculator.Types exposing(Msg(..), Model, ValidModel, ResultUnit(..), ValidResultUnit(..))
 
-
-import Types exposing (Model, ValidModel, ResultUnit(..), ValidResultUnit(..), Msg(..))
-import CalculatorForm
-import Results
-
-
--- MODEL
 
 model : Model
 model =
@@ -53,7 +45,6 @@ toMaybeFloat : String -> Maybe Float
 toMaybeFloat s = Result.toMaybe (String.toFloat s)
 
 
--- UPDATE
 
 update : Msg -> Model -> Model
 update msg model =
@@ -72,19 +63,3 @@ setAt i value list =
     a = Array.set i value (Array.fromList list)
   in
     Array.toList a
-
--- VIEW
-
-view : Model -> Html Msg
-view model =
-  div []
-    [ CalculatorForm.view model
-    , maybeResultsView model
-    ]
-
-    
-maybeResultsView : Model -> Html Msg
-maybeResultsView model =
-  case validateModel model of
-    Just validModel -> Results.view validModel
-    Nothing -> div [] []

@@ -1,8 +1,8 @@
-module Results exposing (view, formatFloat, calculateResult)
+module Calculator.ResultsView exposing (view, formatFloat, calculateResult)
 
 import Html exposing (Html, text, table, thead, tbody, tr, th, td, div)
 import Html.Attributes exposing (scope)
-import Types exposing (ValidModel, ValidResultUnit(..))
+import Calculator.Types exposing (ValidModel, ValidResultUnit(..))
 
 view : ValidModel -> Html a
 view model =
