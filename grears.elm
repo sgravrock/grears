@@ -79,9 +79,7 @@ setAt i value list =
 view : Model -> Html Msg
 view model =
   div []
-    [ 
-      Html.node "link" [ rel "stylesheet", href "grears.css" ] []
-    , fieldset [] [
+    [ fieldset [] [
         legend [] [ text "Front gears" ]
       , div [] (List.indexedMap frontGearField model.fronts)
       ]

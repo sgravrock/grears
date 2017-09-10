@@ -1,5 +1,20 @@
-import Html exposing (Html)
-import Grears exposing (model, view, update)
+import Html exposing (Html, div)
+import Html.Attributes exposing (rel, href)
+
+import Grears
+import Types exposing (Model, Msg)
 
 main =
-  Html.beginnerProgram { model = model, view = view, update = update }
+  Html.beginnerProgram
+    { model = Grears.model
+    , view = view
+    , update = Grears.update
+    }
+
+view : Model -> Html Msg
+view model =
+  div []
+    [
+      Html.node "link" [ rel "stylesheet", href "grears.css" ] []
+    , Grears.view model
+    ]
