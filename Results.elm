@@ -2,9 +2,9 @@ module Results exposing (view, formatFloat, calculateResult)
 
 import Html exposing (Html, text, table, thead, tbody, tr, th, td, div)
 import Html.Attributes exposing (scope)
-import Types exposing (ValidModel, ValidResultUnit(..), Msg(..))
+import Types exposing (ValidModel, ValidResultUnit(..))
 
-view : ValidModel -> Html Msg
+view : ValidModel -> Html a
 view model =
   let
     bodyColHeaders = List.map colHeader (List.map toString model.fronts)
@@ -16,13 +16,13 @@ view model =
       ]
 
 
-emptyHeader : Html Msg
+emptyHeader : Html a
 emptyHeader = th [] []
 
-colHeader : String -> Html Msg
+colHeader : String -> Html a
 colHeader label =  th [scope "col"] [text label]
 
-row : ValidResultUnit -> List Int -> Int -> Html Msg
+row : ValidResultUnit -> List Int -> Int -> Html a
 row unit fronts rear =
   let
     rowHeader = th [scope "row"] [text (toString rear)]
@@ -30,7 +30,7 @@ row unit fronts rear =
   in
     tr [] (rowHeader :: bodyCells)
 
-singleResultCell : ValidResultUnit -> Int -> Int -> Html Msg
+singleResultCell : ValidResultUnit -> Int -> Int -> Html a
 singleResultCell unit rear front =
   let
     ratio = formatResult (calculateResult front rear unit)
