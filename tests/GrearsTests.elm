@@ -5,7 +5,7 @@ import Fuzz exposing (Fuzzer, int, list, string)
 import Test exposing (..)
 import Types exposing (Model, ValidModel, ResultUnit(..), ValidResultUnit(..))
 
-import Grears exposing (validateModel)
+import Calculator exposing (validateModel)
 import Results exposing (formatFloat, calculateResult)
 
 

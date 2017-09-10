@@ -1,4 +1,4 @@
-module Grears exposing (..)
+module Calculator exposing (..)
 
 import Html exposing (Html, div, text, fieldset, legend, input, select, option, label, span)
 import Html.Attributes exposing (type_, class, rel, href, size, id, for, selected)

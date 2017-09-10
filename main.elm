@@ -1,14 +1,14 @@
 import Html exposing (Html, div)
 import Html.Attributes exposing (rel, href)
 
-import Grears
+import Calculator
 import Types exposing (Model, Msg)
 
 main =
   Html.beginnerProgram
-    { model = Grears.model
+    { model = Calculator.model
     , view = view
-    , update = Grears.update
+    , update = Calculator.update
     }
 
 view : Model -> Html Msg
@@ -16,5 +16,5 @@ view model =
   div []
     [
       Html.node "link" [ rel "stylesheet", href "grears.css" ] []
-    , Grears.view model
+    , Calculator.view model
     ]
