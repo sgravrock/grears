@@ -39,7 +39,7 @@ rearGearField wrapMsg i value = intField wrapMsg (SetRear i) value
 intField : (Msg -> a) -> (String -> Msg) -> String -> Html a
 intField wrapMsg updateFunc value =
   input [ type_ "text"
-        , onInput (\s -> wrapMsg (updateFunc s))
+        , onInput (wrapMsg << updateFunc)
         , class (fieldClass (value == ""  || isValidInt value))
         , size 2
         , Html.Attributes.value value
@@ -48,7 +48,7 @@ intField wrapMsg updateFunc value =
 wheelSizeField : (Msg -> a) -> String -> Html a
 wheelSizeField wrapMsg value =
   input [ type_ "text"
-        , onInput (\s -> wrapMsg (SetWheelDia s))
+        , onInput (wrapMsg << SetWheelDia)
         , class (fieldClass (isValidFloat value))
         , size 5
         , Html.Attributes.value value
@@ -65,7 +65,7 @@ unitSelectBox wrapMsg model =
   in
     label []
     [ span [class "label"] [text "Unit"]
-    , Select.fromSelected_ units (\u -> wrapMsg (SetUnit u)) toString unitLabel model.unit
+    , Select.fromSelected_ units (wrapMsg << SetUnit) toString unitLabel model.unit
     ]
 
 unitLabel : ResultUnit -> String
