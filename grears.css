@@ -1,3 +1,4 @@
+body { margin: 1em; }
 .invalid { background: red; }
 
 .label { margin-top: 1em; }
