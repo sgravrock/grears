@@ -8,47 +8,47 @@ import Select
 import Calculator.Types exposing (Msg(..), Model, ResultUnit(..))
 
 
-view : Model -> Html Msg
-view model =
+view : (Msg -> a) -> Model -> Html a
+view wrapMsg model =
   div []
     [ fieldset [] [
         legend [] [ text "Front gears" ]
-      , div [] (List.indexedMap frontGearField model.fronts)
+      , div [] (List.indexedMap (frontGearField wrapMsg) model.fronts)
       ]
     , fieldset [] [
         legend [] [ text "Rear gears" ]
-      , div [] (List.indexedMap rearGearField model.rears)
+      , div [] (List.indexedMap (rearGearField wrapMsg) model.rears)
       ]
-    , unitSelectBox model
+    , unitSelectBox wrapMsg model
     , if model.unit == GearInches then
         label []
           [ span [class "label"] [text "Wheel diameter in inches"]
-          , wheelSizeField model.wheelDia
+          , wheelSizeField wrapMsg model.wheelDia
           ]
       else
         span [] []
     ]
 
 
-frontGearField : Int -> String -> Html Msg
-frontGearField i value = intField (SetFront i) value
+frontGearField : (Msg -> a) -> Int -> String -> Html a
+frontGearField wrapMsg i value = intField wrapMsg (SetFront i) value
 
-rearGearField : Int -> String -> Html Msg
-rearGearField i value = intField (SetRear i) value
+rearGearField : (Msg -> a) -> Int -> String -> Html a
+rearGearField wrapMsg i value = intField wrapMsg (SetRear i) value
 
-intField : (String -> Msg) -> String -> Html Msg
-intField updateFunc value =
+intField : (Msg -> a) -> (String -> Msg) -> String -> Html a
+intField wrapMsg updateFunc value =
   input [ type_ "text"
-        , onInput updateFunc
+        , onInput (\s -> wrapMsg (updateFunc s))
         , class (fieldClass (value == ""  || isValidInt value))
         , size 2
         , Html.Attributes.value value
         ] []
 
-wheelSizeField : String -> Html Msg
-wheelSizeField value =
+wheelSizeField : (Msg -> a) -> String -> Html a
+wheelSizeField wrapMsg value =
   input [ type_ "text"
-        , onInput SetWheelDia
+        , onInput (\s -> wrapMsg (SetWheelDia s))
         , class (fieldClass (isValidFloat value))
         , size 5
         , Html.Attributes.value value
@@ -58,14 +58,14 @@ fieldClass : Bool -> String
 fieldClass isValid = if isValid then "" else "invalid"
 
 
-unitSelectBox : Model -> Html Msg
-unitSelectBox model =
+unitSelectBox : (Msg -> a) -> Model -> Html a
+unitSelectBox wrapMsg model =
   let
     units = [Ratio, GearInches]
   in
     label []
     [ span [class "label"] [text "Unit"]
-    , Select.fromSelected_ units SetUnit toString unitLabel model.unit
+    , Select.fromSelected_ units (\u -> wrapMsg (SetUnit u)) toString unitLabel model.unit
     ]
 
 unitLabel : ResultUnit -> String

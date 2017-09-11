@@ -10,15 +10,15 @@ import Calculator.Form
 import Calculator.ResultsView
 
 
-view : Model -> Html Msg
-view model =
+view : (Msg -> a) -> Model -> Html a
+view wrapMsg model =
   div []
-    [ Calculator.Form.view model
+    [ Calculator.Form.view wrapMsg model
     , maybeResultsView model
     ]
 
     
-maybeResultsView : Model -> Html Msg
+maybeResultsView : Model -> Html a
 maybeResultsView model =
   case validateModel model of
     Just validModel -> Calculator.ResultsView.view validModel
