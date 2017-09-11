@@ -2,7 +2,7 @@ module Calculator.ResultsView exposing (view, formatFloat, calculateResult)
 
 import Html exposing (Html, text, table, thead, tbody, tr, th, td, div)
 import Html.Attributes exposing (scope)
-import Calculator.Types exposing (ValidModel, ValidResultUnit(..))
+import Calculator.Types exposing (Diameter(..), ValidModel, ValidResultUnit(..))
 
 view : ValidModel -> Html a
 view model =
@@ -42,7 +42,8 @@ calculateResult : Int -> Int -> ValidResultUnit -> Float
 calculateResult front rear unit = 
   case unit of
     ValidRatio -> gearRatio front rear
-    ValidGearInches diaInches -> diaInches * (gearRatio front rear)
+    ValidGearInches (DiameterInches inches) ->
+      inches * (gearRatio front rear)
 
 gearRatio : Int -> Int -> Float
 gearRatio front rear = (toFloat front / toFloat rear)

@@ -3,7 +3,7 @@ module GrearsTests exposing (..)
 import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, list, string)
 import Test exposing (..)
-import Calculator.Types exposing (Model, ValidModel, ResultUnit(..), ValidResultUnit(..))
+import Calculator.Types exposing (Model, ValidModel, Diameter(..), ResultUnit(..), ValidResultUnit(..))
 
 import Calculator.State exposing (validateModel)
 import Calculator.ResultsView exposing (formatFloat, calculateResult)
@@ -65,7 +65,7 @@ all =
           let
             tmp = modelForUnit GearInches
             model = { tmp | wheelDia = "1" }
-            expected = validModelForUnit (ValidGearInches 1)
+            expected = validModelForUnit (ValidGearInches (DiameterInches 1))
           in
             Expect.equal (validateModel model) (Just expected)
       ]
@@ -79,7 +79,7 @@ all =
       , test "calculates gear inches" <|
         \() ->
           let
-            result = calculateResult 52 11 (ValidGearInches 27.32)
+            result = calculateResult 52 11 (ValidGearInches (DiameterInches 27.32))
           in
             Expect.within (Expect.Relative 0.01) 129.1 result
       ]

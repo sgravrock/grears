@@ -1,7 +1,7 @@
 module Calculator.State exposing (model, update, validateModel)
 
 import Array
-import Calculator.Types exposing(Msg(..), Model, ValidModel, ResultUnit(..), ValidResultUnit(..))
+import Calculator.Types exposing(Msg(..), Model, Diameter(..), ValidModel, ResultUnit(..), ValidResultUnit(..))
 
 
 model : Model
@@ -36,10 +36,13 @@ validateUnits : Model -> Maybe ValidResultUnit
 validateUnits model =
   case model.unit of
     Ratio -> Just ValidRatio
-    GearInches -> Maybe.map ValidGearInches (toMaybeFloat model.wheelDia)
+    GearInches -> Maybe.map ValidGearInches (toMaybeDiameter model.wheelDia)
 
 toMaybeInt : String -> Maybe Int
 toMaybeInt s = Result.toMaybe (String.toInt s)
+
+toMaybeDiameter : String -> Maybe Diameter
+toMaybeDiameter d = Maybe.map DiameterInches (toMaybeFloat d)
 
 toMaybeFloat : String -> Maybe Float
 toMaybeFloat s = Result.toMaybe (String.toFloat s)

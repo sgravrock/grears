@@ -1,4 +1,4 @@
-module Calculator.Types exposing (Msg(..), ResultUnit(..), Model, ValidModel, ValidResultUnit(..))
+module Calculator.Types exposing (Msg(..), ResultUnit(..), Model, Diameter(..), ValidModel, ValidResultUnit(..))
 
 type Msg
   = SetFront Int String
@@ -17,9 +17,11 @@ type alias Model =
   , wheelDia: String
   }
 
+type Diameter = DiameterInches Float
+
 type ValidResultUnit
   = ValidRatio
-  | ValidGearInches Float -- wheel diameter in inches
+  | ValidGearInches Diameter
 
 type alias ValidModel =
   { fronts : List Int
