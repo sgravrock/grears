@@ -9,6 +9,7 @@ type Msg
 type ResultUnit
   = Ratio
   | GearInches
+  | MphAt60Rpm
 
 type alias Model =
   { fronts : List String
@@ -22,6 +23,7 @@ type Diameter = DiameterInches Float
 type ValidResultUnit
   = ValidRatio
   | ValidGearInches Diameter
+  | ValidMphAt60Rpm Diameter
 
 type alias ValidModel =
   { fronts : List Int

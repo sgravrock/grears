@@ -82,6 +82,13 @@ all =
             result = calculateResult 52 11 (ValidGearInches (DiameterInches 27.32))
           in
             Expect.within (Expect.Relative 0.01) 129.1 result
+      , test "calculates MPH at 60 RPM" <|
+        \() ->
+          let
+            unit = (ValidMphAt60Rpm (DiameterInches 27.32))
+            result = calculateResult 52 11 unit
+          in
+            Expect.within (Expect.Relative 0.01) 23.04 result
       ]
     ]
 

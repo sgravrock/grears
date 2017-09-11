@@ -40,10 +40,23 @@ singleResultCell unit rear front =
 
 calculateResult : Int -> Int -> ValidResultUnit -> Float
 calculateResult front rear unit = 
-  case unit of
-    ValidRatio -> gearRatio front rear
-    ValidGearInches (DiameterInches inches) ->
-      inches * (gearRatio front rear)
+  let
+    _ = Debug.log "Unit" unit
+    ratio = gearRatio front rear
+  in
+    case unit of
+      ValidRatio -> ratio
+      ValidGearInches (DiameterInches diaInches) -> diaInches * ratio
+      ValidMphAt60Rpm (DiameterInches diaInches) ->
+        let
+          circInches = diaInches * pi
+          circMiles = circInches / 63360.0
+          rph = 60 * 60
+          _ = Debug.log "MPH @ 60, circ =" circMiles
+        in
+          circMiles * ratio * rph
+
+
 
 gearRatio : Int -> Int -> Float
 gearRatio front rear = (toFloat front / toFloat rear)

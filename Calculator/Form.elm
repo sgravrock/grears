@@ -20,7 +20,7 @@ view model =
       , div [] (List.indexedMap rearGearField model.rears)
       ]
     , unitSelectBox model
-    , if model.unit == GearInches then
+    , if model.unit /= Ratio then
         label []
           [ span [class "label"] [text "Wheel diameter in inches"]
           , wheelSizeField model.wheelDia
@@ -61,7 +61,7 @@ fieldClass isValid = if isValid then "" else "invalid"
 unitSelectBox : Model -> Html Msg
 unitSelectBox model =
   let
-    units = [Ratio, GearInches]
+    units = [Ratio, GearInches, MphAt60Rpm]
   in
     label []
     [ span [class "label"] [text "Unit"]
@@ -73,6 +73,7 @@ unitLabel u =
   case u of
     Ratio -> "Ratio"
     GearInches -> "Gear inches"
+    MphAt60Rpm -> "MPH at 60 RPM"
 
 
 isValidInt : String -> Bool
