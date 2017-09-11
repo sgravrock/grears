@@ -46,4 +46,8 @@ view model =
     ]
 
 viewForCalc : Int -> Calculator.Types.Model -> Html Msg
-viewForCalc i model = Calculator.View.view (UpdateCalculator i) model
+viewForCalc i model =
+  let
+    subview = Calculator.View.view model
+  in
+    Html.map (UpdateCalculator i) subview
