@@ -46,11 +46,11 @@ calculateResult front rear unit =
     case unit of
       ValidRatio -> ratio
       ValidGearInches (DiameterInches diaInches) -> diaInches * ratio
-      ValidMphAt60Rpm (DiameterInches diaInches) ->
+      ValidMphAtRpm rpm (DiameterInches diaInches) ->
         let
           circInches = diaInches * pi
           circMiles = circInches / 63360.0
-          rph = 60 * 60
+          rph = (toFloat rpm) * 60
         in
           circMiles * ratio * rph
 

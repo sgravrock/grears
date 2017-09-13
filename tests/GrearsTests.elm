@@ -85,10 +85,17 @@ all =
       , test "calculates MPH at 60 RPM" <|
         \() ->
           let
-            unit = (ValidMphAt60Rpm (DiameterInches 27.32))
+            unit = (ValidMphAtRpm 60 (DiameterInches 27.32))
             result = calculateResult 52 11 unit
           in
             Expect.within (Expect.Relative 0.01) 23.04 result
+      , test "calculates MPH at 90 RPM" <|
+        \() ->
+          let
+            unit = (ValidMphAtRpm 90 (DiameterInches 27.32))
+            result = calculateResult 52 11 unit
+          in
+            Expect.within (Expect.Relative 0.01) 34.56 result
       ]
     ]
 

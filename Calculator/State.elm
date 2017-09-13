@@ -37,7 +37,7 @@ validateUnits model =
   case model.unit of
     Ratio -> Just ValidRatio
     GearInches -> Maybe.map ValidGearInches (toMaybeDiameter model.wheelDia)
-    MphAt60Rpm -> Maybe.map ValidMphAt60Rpm (toMaybeDiameter model.wheelDia)
+    MphAtRpm rpm -> Maybe.map (ValidMphAtRpm rpm) (toMaybeDiameter model.wheelDia)
 
 toMaybeInt : String -> Maybe Int
 toMaybeInt s = Result.toMaybe (String.toInt s)

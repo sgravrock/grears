@@ -61,7 +61,7 @@ fieldClass isValid = if isValid then "" else "invalid"
 unitSelectBox : Model -> Html Msg
 unitSelectBox model =
   let
-    units = [Ratio, GearInches, MphAt60Rpm]
+    units = [Ratio, GearInches, MphAtRpm 60, MphAtRpm 90]
   in
     label []
     [ span [class "label"] [text "Unit"]
@@ -73,7 +73,7 @@ unitLabel u =
   case u of
     Ratio -> "Ratio"
     GearInches -> "Gear inches"
-    MphAt60Rpm -> "MPH at 60 RPM"
+    MphAtRpm rpm -> "MPH at " ++ (toString rpm) ++ " RPM"
 
 
 isValidInt : String -> Bool
