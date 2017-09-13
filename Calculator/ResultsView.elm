@@ -41,7 +41,6 @@ singleResultCell unit rear front =
 calculateResult : Int -> Int -> ValidResultUnit -> Float
 calculateResult front rear unit = 
   let
-    _ = Debug.log "Unit" unit
     ratio = gearRatio front rear
   in
     case unit of
@@ -52,7 +51,6 @@ calculateResult front rear unit =
           circInches = diaInches * pi
           circMiles = circInches / 63360.0
           rph = 60 * 60
-          _ = Debug.log "MPH @ 60, circ =" circMiles
         in
           circMiles * ratio * rph
 
